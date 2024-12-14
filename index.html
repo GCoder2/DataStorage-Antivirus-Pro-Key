@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PRO Key Oluştur</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            text-align: center;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: #333;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            color: white;
+            background-color: #007BFF;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        #result {
+            margin-top: 20px;
+            font-size: 16px;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>PRO Key Oluştur</h1>
+        <button onclick="generateKey()">Key Oluştur</button>
+        <div id="result"></div>
+    </div>
+
+    <script>
+        async function generateKey() {
+            try {
+                const response = await fetch('create_key.php', {
+                    method: 'POST'
+                });
+
+                if (!response.ok) {
+                    throw new Error('Sunucuya bağlanırken bir hata oluştu.');
+                }
+
+                const data = await response.json();
+
+                if (data.success) {
+                    document.getElementById('result').innerHTML = `
+                        <p>Başarılı! Oluşturulan Key: <strong>${data.key}</strong></p>
+                        <p>Geçerlilik Süresi: ${data.expires_in}</p>
+                    `;
+                } else {
+                    document.getElementById('result').innerHTML = `
+                        <p style="color: red;">Hata: ${data.error}</p>
+                    `;
+                }
+            } catch (error) {
+                document.getElementById('result').innerHTML = `
+                    <p style="color: red;">Hata: ${error.message}</p>
+                `;
+            }
+        }
+    </script>
+</body>
+</html>
